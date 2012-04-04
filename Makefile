@@ -25,7 +25,7 @@ verslag.pdf: verslag.tex
 	rm -f */*.log
 
 clean:
-	rm -f */*.o */server *.o */*.pdf
+	rm -f */*.o */server *.o */verslag.pdf
 
 message.o: message.cpp */*.h
 communication.o: communication.cpp */*.h
