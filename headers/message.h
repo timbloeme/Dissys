@@ -25,7 +25,10 @@ class Message
 		none = send to none (default)
 	*/
 	void setRecipients(string);
-	string getSender(void);
+	string getRecipients(void);
 
-	void send(void);
+	/*
+		none = there is no sender, whut are you doing?
+	*/
+	string getSender(void);
 };
