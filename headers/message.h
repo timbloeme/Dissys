@@ -34,9 +34,8 @@ public:
 	void setRecipients(string);
 	string getRecipients(void);
 
-	/*
-		none = there is no sender, whut are you doing?
-	*/
-	string getSender(void);
+	unsigned long getSenderIp(void);
+	unsigned short getSenderPort(void);
+	void setSender(unsigned long, unsigned short);
 };
 #endif
