@@ -1,7 +1,14 @@
+#ifndef _MESSAGE
+#define _MESSAGE 1
 #include <string>
 using namespace std;
+
 class Message
 {
+private:
+	string data;
+		
+public:	
 	Message(void);
 
 	void setType(int);
@@ -32,3 +39,4 @@ class Message
 	*/
 	string getSender(void);
 };
+#endif
