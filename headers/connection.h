@@ -2,14 +2,12 @@
 #define _CONNECTION 1
 
 #include <message.h>
-#include <manager.h>
 #include <database.h>
 class Connection
 {
 private:
 	char * buffer;
-	Manager manager;
-	Database database;
+	Database * database;
 	int sd;
 
 public:
@@ -29,8 +27,7 @@ public:
 	void send(Message);
 	
 	//send to specific ip adress
+	//Also use for managmentmessages
 	void send(Message, unsigned long, unsigned short);
-	
-	void sendManager(Message);
 };
 #endif

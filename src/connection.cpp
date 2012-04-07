@@ -29,9 +29,8 @@ Connection::Connection(int port = 2001)
 	
 void Connection::setDatabase(Database db)
 {
-	this->database = db;
+	database = &db;
 }
-	
 
 Message Connection::listen(void){
 	Message message;
@@ -67,9 +66,34 @@ Message Connection::listen(void){
 	return message;
 }
 
-void Connection::send(Message)
+void Connection::send(Message message)
 {
+	int sendtype, size;
+	string recipient = message.getRecipients(&sendtype);
+	entry_t entry, * entries;
 	
+	switch(sendtype) {
+		case NONE:
+			break;
+		case ONE:
+			if (database->lookup(recipient, &entry) != 0)
+				this->send(message, entry.ip, entry.port);
+			break;
+		case ALL:
+			entries  = database->allEntries(&size);
+			for (int i = 0 ; i < size ; i++)
+				this->send(message, entries[i].ip, entries[i].port);
+			break;
+		case ALLBUTONE:
+			entries  = database->allEntries(&size);
+			for (int i = 0 ; i < size ; i++) {
+				if (entries[i].name->compare(recipient) != 0)
+					this->send(message, entries[i].ip, entries[i].port);
+			}
+			break;
+		default:
+			break;
+	}
 }
 
 void Connection::send(Message message, unsigned long ip, unsigned short port)
@@ -88,8 +112,4 @@ void Connection::send(Message message, unsigned long ip, unsigned short port)
 	strcpy(&buffer[6], message.getMessage().c_str());
 	
 	sendto(sd, buffer, length, 0, (struct sockaddr *)&destination, sizeof(struct sockaddr_in));
-}
-void Connection::sendManager(Message)
-{
-
 }

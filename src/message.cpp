@@ -16,10 +16,9 @@ void Message::setReferenceNumber(int){}
 int Message::getReferenceNumber(void){return 1;}
 	
 
-void Message::setRecipients(string){}
-string Message::getRecipients(void){return data;}
+void Message::setRecipients(string, int){}
+string Message::getRecipients(int *){return data;}
 
-unsigned long Message::getSenderIp(void){return 1;}
-unsigned short Message::getSenderPort(void){return 1;}
+void Message::getSender(unsigned long *, unsigned short *){}
 
 void Message::setSender(unsigned long, unsigned short){}
