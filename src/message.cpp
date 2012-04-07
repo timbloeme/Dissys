@@ -9,7 +9,8 @@ int Message::getType(void){return 1;}
 
 void Message::setMessage(string){}
 string Message::getMessage(void){return data;}
-	
+
+int Message::length(void){return 1;}
 
 void Message::setReferenceNumber(int){}
 int Message::getReferenceNumber(void){return 1;}

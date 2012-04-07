@@ -16,6 +16,8 @@ public:
 	void setMessage(string);
 	string getMessage(void);
 	
+	int length(void);
+	
 	//'Volgnummer'
 	void setReferenceNumber(int);
 	int getReferenceNumber(void);

@@ -8,6 +8,7 @@ extern "C"
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <cstring>
 }
 
 using namespace std;
@@ -51,6 +52,8 @@ Message Connection::listen(void){
 		
 		buffer[length] = '\0';
 		string t = &buffer[6];
+		if (t.length() + 6 != length)
+			continue;
 		if (string::npos != 
 		t.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`~!@#$%^&*()-_=+[{]};:'\"\\|,<.>/?"))
 			continue;
@@ -71,7 +74,20 @@ void Connection::send(Message)
 
 void Connection::send(Message message, unsigned long ip, unsigned short port)
 {
+	struct sockaddr_in destination;
+	destination.sin_addr.s_addr = ip;
+	destination.sin_port = port;
 	
+	uint16_t length = message.length();
+	uint16_t type = message.getType();
+	uint16_t refnum = message.getReferenceNumber();
+	
+	buffer[0] = htons(length);
+	buffer[2] = htons(type);
+	buffer[4] = htons(refnum);
+	strcpy(&buffer[6], message.getMessage().c_str());
+	
+	sendto(sd, buffer, length, 0, (struct sockaddr *)&destination, sizeof(struct sockaddr_in));
 }
 void Connection::sendManager(Message)
 {
