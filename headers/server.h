@@ -14,7 +14,7 @@ private:
 	Manager * manager;
 	Database * database;
 	string ident, parentname;
-	unsigned long csip, parentip, parentport;
+	unsigned long csip, parentip, parentport, csref;
 	unsigned short port;
 	
 public:

@@ -16,9 +16,9 @@ using namespace std;
 int main(void)
 {   
 	struct sockaddr_in sa;
-	inet_pton(AF_INET, "192.168.16.100", &sa.sin_addr);
-    string a = "T007S007123456789012345678901234";
-    Server server (2002, sa.sin_addr.s_addr, a);
+	inet_pton(AF_INET, "192.168.16.101", &sa.sin_addr);
+    string a = "T007S007123436789012345678901234";
+    Server server (2003, sa.sin_addr.s_addr, a);
     server.start();
     return 0;     
 }
