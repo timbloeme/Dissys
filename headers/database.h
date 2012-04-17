@@ -41,8 +41,8 @@ public:
 	void* create_new_entry(int type)
 	int insert(void* entry, int type);
 	int replace(void* entry, int type);
-	int return_list(void* entry, int type);
-	int look_up_name(strin* koekje);
+	int return_list(void* list, int type);
+	int look_up_name(string* name);
 	int look_up_ip(unsigned long ip);
 	void delete_(void* entry, int type);
 	
