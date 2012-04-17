@@ -41,8 +41,13 @@ public:
 	void* create_new_entry(int type)
 	int insert(void* entry, int type);
 	int replace(void* entry, int type);
+<<<<<<< HEAD
 	int return_list(void* list, int type);
 	int look_up_name(string* name);
+=======
+	int return_list(void* entry, int type);
+	int look_up_name(strin* koekje);
+>>>>>>> db03f7290d99bce3a33fd5e520d3b866d138bb27
 	int look_up_ip(unsigned long ip);
 	void delete_(void* entry, int type);
 	
