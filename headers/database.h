@@ -9,36 +9,44 @@
 
 using namespace std;
 
-typedef struct{
+typedef struct client_d{
   string* name;
-  client_i *next,*prev;
-  int authorisatie;
-  unsigned short socket;
+  struct client_d *next,*prev;
+  char authorisatie;
+  unsigned short port;
+  unsigned long ip;
+  int ref;
+  char pingtimeout;
 }client_d;
 
-typedef struct{
+typedef struct client_i{
   string* name;
-  client_i *next,*prev;
-  server *to;
+  struct client_i *next,*prev;
+  struct server *to;
 }client_i;
 
 //miss is het handig om hier later ook nog een lijst met clients aan toe te voegen.
 
-typedef struct{
-  server_i *next,*prev;
+typedef struct server{
+  struct server *next,*prev;
   unsigned long ip;
   unsigned short port;
   unsigned int ref;
+  char pingtimeout;
 }server;
 
 class Database {
 private:
-	int nrentries, size;
-	entry_t * entries;
+	client_i * begin_clients_indirect;
+	client_i * end_clients_indirect;
+	client_d * begin_clients_direct;
+	client_d * end_clients_direct;
+	server * begin_servers_direct;
+	server * end_servers_direct;
 public:
 	int conClients;	
 	Database();
-	void* create_new_entry(int type)
+	void* create_new_entry(int type);
 	int insert(void* entry, int type);
 	int replace(void* entry, int type);
 <<<<<<< HEAD
@@ -46,10 +54,14 @@ public:
 	int look_up_name(string* name);
 =======
 	int return_list(void* entry, int type);
+<<<<<<< HEAD
 	int look_up_name(strin* koekje);
 >>>>>>> db03f7290d99bce3a33fd5e520d3b866d138bb27
+=======
+	int look_up_name(string* koekje);
+>>>>>>> a1d2f0b051bd0c15db3c437bc256319740ba0667
 	int look_up_ip(unsigned long ip);
-	void delete_(void* entry, int type);
+	int delete_(void* entry, int type);
 	
 };
 #endif

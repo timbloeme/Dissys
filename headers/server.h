@@ -16,6 +16,9 @@ private:
 	string ident, parentname;
 	unsigned long csip, parentip, parentport, csref;
 	unsigned short port;
+
+	void incomingMessage(Message);
+	void monitor(void);
 	
 public:
 	//port, csip, ident

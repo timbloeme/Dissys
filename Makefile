@@ -6,17 +6,19 @@ OL=objects
 DOC=doc
 
 WARNING_FLAGS=-Wall -Wextra -Wshadow -pedantic-errors
-CFLAGS= -ggdb -I$(HD) $(WARNING_FLAGS)
-LDFLAGS= -ggdb -I$(HD)
+LDFLAGS= -ggdb -I$(HD) -Isrc
+CFLAGS= $(LDFLAGS) $(WARNING_FLAGS)
 
 VPATH = src:$(DOC)
 
 .cpp.o:
+	mkdir -p $(OL)
 	$(CC) -c $(CFLAGS) $< -o $(OL)/$@
 
 all: manager.o database.o connection.o main.o message.o server.o $(BIN)/server verslag.pdf $(HD)/*.h
 
 $(BIN)/server: $(OL)/manager.o $(OL)/database.o $(OL)/message.o $(OL)/connection.o $(OL)/server.o $(OL)/main.o
+	mkdir -p $(BIN)
 	$(CC) $(LDFLAGS) -o $@ $^ 
 
 verslag.pdf: verslag.tex
