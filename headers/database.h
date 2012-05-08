@@ -10,7 +10,7 @@
 using namespace std;
 
 typedef struct client_d{
-  string* name;
+  char* name;
   struct client_d *next,*prev;
   char authorisatie;
   unsigned short port;
@@ -20,7 +20,7 @@ typedef struct client_d{
 }client_d;
 
 typedef struct client_i{
-  string* name;
+  char* name;
   struct client_i *next,*prev;
   struct server *to;
 }client_i;
@@ -41,27 +41,18 @@ private:
 	client_i * end_clients_indirect;
 	client_d * begin_clients_direct;
 	client_d * end_clients_direct;
-	server * begin_servers_direct;
-	server * end_servers_direct;
+	server * begin_servers;
+	server * end_servers;
 public:
 	int conClients;	
 	Database();
 	void* create_new_entry(int type);
 	int insert(void* entry, int type);
 	int replace(void* entry, int type);
-<<<<<<< HEAD
-	int return_list(void* list, int type);
-	int look_up_name(string* name);
-=======
-	int return_list(void* entry, int type);
-<<<<<<< HEAD
-	int look_up_name(strin* koekje);
->>>>>>> db03f7290d99bce3a33fd5e520d3b866d138bb27
-=======
-	int look_up_name(string* koekje);
->>>>>>> a1d2f0b051bd0c15db3c437bc256319740ba0667
+	void* return_list(int type);
+	int look_up_name(char* name, void* entry);
 	int look_up_ip(unsigned long ip);
-	int delete_(void* entry, int type);
+	int delete_entry(void* entry, int type);
 	
 };
 #endif

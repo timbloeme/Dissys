@@ -1,4 +1,5 @@
 #include <message.h>
+#include <string.h>
 
 using namespace std;
  
@@ -22,20 +23,23 @@ int Message::getType(void)
 	return mtype;
 }
 
-void Message::setMessage(string data)
+void Message::setMessage(char* data)
 {
+	string temp;
 	mdata = data;
+	temp = (string)data;
 	
 	if (string::npos != 
-		mdata.find_first_not_of("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`~!@#$%^&*()-_=+[{]};:'\"\\|,<.>/?"))
+		temp.find_first_not_of("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`~!@#$%^&*()-_=+[{]};:'\"\\|,<.>/?"))
 		//Print warning here, be robust, keep the wheels turning!
 	
-	if (mdata.length()+6 > 200)
-		mdata.resize(194);
-	msize = mdata.length()+6;
+	if (strlen(mdata)+6 > 200)
+		/**Als we de data caloccen of maloccen dan kunnen we realloc doen */
+		//mdata.resize(194);
+	msize = strlen(mdata)+6;
 }
 
-string Message::getMessage(void)
+char* Message::getMessage(void)
 {
 	return mdata;
 }
@@ -55,13 +59,13 @@ int Message::getReferenceNumber(void)
 	return mrefnum;
 }
 	
-void Message::setRecipients(string recipient, int type)
+void Message::setRecipients(char* recipient, int type)
 {
 	mrecipient = recipient;
 	mrecvtype = type;
 }
 
-string Message::getRecipients(int * recvtype)
+char* Message::getRecipients(int * recvtype)
 {
 	* recvtype = mrecvtype;
 	return mrecipient;

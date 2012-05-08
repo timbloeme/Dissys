@@ -12,7 +12,7 @@ using namespace std;
 class Message
 {
 private:
-	string mdata, mrecipient;
+	char *mdata, *mrecipient;
 	int mtype, msize, mrefnum, mrecvtype;
 	unsigned long mip;
 	unsigned short mport;
@@ -24,8 +24,8 @@ public:
 	int getType(void);
 	
 	//Also sets the length (implicit), do error checking
-	void setMessage(string);
-	string getMessage(void);
+	void setMessage(char*);
+	char* getMessage(void);
 	
 	int length(void);
 	
@@ -45,8 +45,8 @@ public:
 		-1 = send to everyone but person
 		-2 = send to everyone but server
 	*/
-	void setRecipients(string, int);
-	string getRecipients(int *);
+	void setRecipients(char*, int);
+	char* getRecipients(int *);
 
 	void getSender(unsigned long *, unsigned short *);
 	void setSender(unsigned long, unsigned short);

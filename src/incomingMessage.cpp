@@ -1,31 +1,36 @@
 void Server::incomingMessage(Message  message) {
 
 	int type, temp, temp1, size, ref;
-	string buffer;
+	long ip;
+	short port;
+	string buffer, name;
 	char cbuffer[100];
-	entry_t entry, * entries;
+	entry_t entries;
+	void *entry;
 
 	type = message.getType();
 	buffer = message.getMessage();
 	ref = message.getReferenceNumber();
-	message.getSender(&entry.ip, &entry.port);
+	message.getSender(&ip, &port);
 	switch (type) {
 		case 100:
 			printf("100 - client -> server (Received)\n");
-			entry.name = new string(buffer.substr(0, buffer.find_first_of(" ")));
-			if (database->lookup(*entry.name, NULL)) {
+			name = new string(buffer.substr(0, buffer.find_first_of(" ")));
+			if (database->look_up_name(name, *entry) > 0) {
 				printf("510 - server -> client (Sent) - Registratie mislukt\n");
 				message.setType(510);
 				message.setReferenceNumber(0);
 				message.setMessage("Name already exists");
-				connection->send(message, entry.ip, entry.port);
+				connection->send(message, ip, port);
 				break;
 			}
 			printf("500 - server -> client (Sent) - Registratie gelukt\n");
+			/*
 			entry.directlyconnected = 1;
 			entry.isClient = 1;
 			database->conClients++;
 			database->insertReplaceWithIp(entry);
+			*/
 			message.setType(500);
 			message.setMessage("");
 			message.setRecipients(*entry.name, ONE);
