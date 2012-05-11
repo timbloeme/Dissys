@@ -1,9 +1,11 @@
+#include <string.h>
+
 void Server::incomingMessage(Message  message) {
 
 	int type, temp, temp1, size, ref;
-	long ip;
-	short port;
-	string buffer, name;
+	unsigned long ip;
+	unsigned short port;
+	char *buffer, *name;
 	char cbuffer[100];
 	entry_t entries;
 	void *entry;
@@ -15,8 +17,9 @@ void Server::incomingMessage(Message  message) {
 	switch (type) {
 		case 100:
 			printf("100 - client -> server (Received)\n");
-			name = new string(buffer.substr(0, buffer.find_first_of(" ")));
-			if (database->look_up_name(name, *entry) > 0) {
+			//name = new string(buffer.substr(0, buffer.find_first_of(" ")));
+                        name = strtok(buffer, ' ');
+			if (database->look_up_name(name, (client_d*)entry) > 0) {
 				printf("510 - server -> client (Sent) - Registratie mislukt\n");
 				message.setType(510);
 				message.setReferenceNumber(0);
@@ -31,15 +34,17 @@ void Server::incomingMessage(Message  message) {
 			database->conClients++;
 			database->insertReplaceWithIp(entry);
 			*/
+                        entry = database.create_new_entry(DIRECT_CLIENT);
+                        database.insert(entry, DIRECT_CLIENT);
 			message.setType(500);
 			message.setMessage("");
-			message.setRecipients(*entry.name, ONE);
+			message.setRecipients(name, ONE);
 			connection->send(message);
-			
+			printf("Hello")
 			printf("110 - server -> All but client (Sent) - user added\n");
 			message.setType(110);
-			message.setRecipients(*entry.name, ALLBUTONECLIENT);
-			sprintf(cbuffer, "%6d%6d%s", 1, 1, (*entry.name).c_str());
+			message.setRecipients(name, ALLBUTONECLIENT);
+			sprintf(cbuffer, "%6d%6d%s", 1, 1, name.c_str());
 			buffer = cbuffer;
 			message.setMessage(buffer);
 			connection->send(message);
