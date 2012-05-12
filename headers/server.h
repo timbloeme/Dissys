@@ -13,7 +13,7 @@ private:
 	Connection * connection;
 	Manager * manager;
 	Database * database;
-	string ident, parentname;
+	char* ident, parentname;
 	unsigned long csip, parentip, parentport, csref;
 	unsigned short port;
 

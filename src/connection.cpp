@@ -116,7 +116,7 @@ void Connection::send(Message message)
 		case ALLBUTONECLIENT:
 			entry = database->return_list(DIRECT_CLIENT);
 			while(((client_d*)entry)->next){
-			  if(strcmp(((client_d*)entry)->name,recipient) != 0){
+			  if(strcmp(((client_d*)entry)->name, recipient) != 0){
 			    message.setReferenceNumber((((client_d*)entry)->ref)++);
 			    this->send(message, ((client_d*)entry)->ip, ((client_d*)entry)->port);
 			  }

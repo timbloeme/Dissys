@@ -1,12 +1,13 @@
+#include <string.h>
+
 void Server::incomingMessage(Message  message) {
 
 	int type, temp, temp1, size, ref;
-	long ip;
-	short port;
-	string buffer, name;
+	unsigned long ip;
+	unsigned short port;
+	char *buffer, *name;
 	char cbuffer[100];
-	entry_t entries;
-	void *entry;
+	void *entry, *list;
 
 	type = message.getType();
 	buffer = message.getMessage();
@@ -15,8 +16,10 @@ void Server::incomingMessage(Message  message) {
 	switch (type) {
 		case 100:
 			printf("100 - client -> server (Received)\n");
-			name = new string(buffer.substr(0, buffer.find_first_of(" ")));
-			if (database->look_up_name(name, *entry) > 0) {
+			//name = new string(buffer.substr(0, buffer.find_first_of(" ")));
+		
+			name = strtok(buffer, ' ');
+			if (database->look_up_name(name, (void*)entry) > 0) {
 				printf("510 - server -> client (Sent) - Registratie mislukt\n");
 				message.setType(510);
 				message.setReferenceNumber(0);
@@ -31,20 +34,37 @@ void Server::incomingMessage(Message  message) {
 			database->conClients++;
 			database->insertReplaceWithIp(entry);
 			*/
+			entry = database->create_new_entry(DIRECT_CLIENT);
+			((client_d*)entry)->name = name;
+			((client_d*)entry)->ip   = ip;
+			((client_d*)entry)->port = port;
+			database->insert(entry, DIRECT_CLIENT);
 			message.setType(500);
 			message.setMessage("");
-			message.setRecipients(*entry.name, ONE);
+			message.setRecipients(name, ONE);
 			connection->send(message);
 			
 			printf("110 - server -> All but client (Sent) - user added\n");
 			message.setType(110);
-			message.setRecipients(*entry.name, ALLBUTONECLIENT);
-			sprintf(cbuffer, "%6d%6d%s", 1, 1, (*entry.name).c_str());
-			buffer = cbuffer;
+			message.setRecipients(name, ALLBUTONECLIENT);
+			sprintf(cbuffer, "%6d%6d%s", 1, 1, name);
 			message.setMessage(buffer);
 			connection->send(message);
 			
 			printf("110 - server -> client (Sending) - user list\n");
+			list = database->return_list(DIRECT_CLIENT);
+			while(((client_d*)list)->next){
+			  message.setReferenceNumber((((client_d*)list)->ref)++);
+			  connection->send(message, ((client_d*)list)->ip, ((client_d*)list)->port);
+			  list = ((client_d*)list)->next;
+			}
+			list = database->return_list(SERVER);
+			while(((server*)list)->next){
+			  message.setReferenceNumber((((server*)list)->ref)++);
+			  connection->send(message, ((server*)list)->ip, ((server*)list)->port);
+			  list = ((server*)list)->next;
+			}
+			/*
 			entries = database->allEntries(&size);
 			for (int i = 0 ; i < size ; i++) {
 					sprintf(cbuffer, "%6d%6d%s", i+1, size, (*entries[i].name).c_str());
@@ -52,24 +72,28 @@ void Server::incomingMessage(Message  message) {
 					message.setMessage(buffer);
 					message.setRecipients(*entry.name, ONE);
 					connection->send(message);
-			}			
+			}*/			
 			break;			
 		case 110:
 			printf("110 - server -> server (Received)\n");
-			if (buffer.length() > 12) {
-				entry.name = new string (buffer.substr(12));
-				message.getSender(&entry.ip, &entry.port);
-				entry.directlyconnected = 0;
-				entry.isClient = 1;
-				database->insertReplace(entry);
+			if (strlen(buffer) > 12) {
+				//entry.name = new string (buffer.substr(12));
+				for(int i=0; i<12; i++) name[i] = buffer[i];
+				message.getSender(&ip, &port);
+				entry = database->create_new_entry(INDIRECT_CLIENT);
+				((client_d*)entry)->name = name;
+				((client_d*)entry)->ip   = ip;
+				((client_d*)entry)->port = port;
+				database->insert(entry, INDIRECT_CLIENT);
 			}
-			if ( parentip == entry.ip && parentport == entry.port ) {
+			if ( parentip == ip && parentport == port ) {
 				printf("110 - server -> server (Sending to clients and non-parent servers)\n");
-				message.setRecipients(parentname, ALLBUTONESERVER);
+				message.setRecipients(&parentname, ALLBUTONESERVER);
 				connection->send(message);
-				
+				/// MOET NOG VERANDERD WORDEN
 				if (!buffer.substr(0, 6).compare(buffer.substr(6, 6))) {
 					printf("110 - server -> parent server (Sending)\n");
+					
 					entries = database->allEntries(&size);
 					temp = 0, temp1 = 0;
 					
@@ -100,10 +124,10 @@ void Server::incomingMessage(Message  message) {
 			break;
 		case 120:
 			printf("120 - client -> server (Received)\n");
-			if (! database->lookup(entry.ip, entry.port, &entry)) {
+			if (! database->look_up_dir(ip, port, &entry)) {
 				break;	
 			}
-			message.setMessage(*entry.name + " " + buffer);
+			message.setMessage(((client_d*)entry)->name + " " + buffer);
 			message.setType(130);
 			message.setRecipients("#all", ALL);
 			connection->send(message);
@@ -112,10 +136,11 @@ void Server::incomingMessage(Message  message) {
 			printf("130 - server -> All (Sent)\n");
 		case 130:
 			printf("130 - server -> server (Received)\n");
-			if (!database->lookup(entry.ip, entry.port, &entry))
+			if (!database->look_up_ip(ip));
 				break;
-			if (database->lookup(buffer.substr(0, buffer.find_first_of(' ')), NULL)) {
-				message.setRecipients(*entry.name, ALLBUTONESERVER);
+			name = strtok(buffer,' ');
+			if (database->look_up_name(name, (void*)entry) {
+				message.setRecipients(name, ALLBUTONESERVER);
 				connection->send(message);
 				printf("130 - server -> All (Sent)\n");
 				database->delete_(buffer);
