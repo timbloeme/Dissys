@@ -53,6 +53,7 @@ public:
 	int look_up_name(char* name, void* entry);
 	int look_up_ip(unsigned long ip);
 	int delete_entry(void* entry, int type);
+	int look_up_direct(unsigned long ip, unsigned short port, client_d* output);
 	
 };
 #endif

@@ -225,7 +225,7 @@ int Database::look_up_name(char* name, void* entry){
   return output;
 }
 
-int Database::look_up_ip(unsigned long ip, void *entry){
+int Database::look_up_ip(unsigned long ip){
   int output=0;
   server* temp=begin_servers;
   while(temp->next==NULL){
@@ -235,3 +235,15 @@ int Database::look_up_ip(unsigned long ip, void *entry){
   return output;
 }
 
+int Database::look_up_direct(unsigned long ip, unsigned short port, client_d* found){
+  int output=0;
+  client_d* temp=begin_clients_direct;
+  while(temp->next==NULL){
+    if(temp->ip==ip && temp->port == port){
+      output++;
+      found=temp;
+    }
+    temp=temp->next;
+  }
+  return output;
+}

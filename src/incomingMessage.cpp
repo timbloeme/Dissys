@@ -17,7 +17,6 @@ void Server::incomingMessage(Message  message) {
 		case 100:
 			printf("100 - client -> server (Received)\n");
 			//name = new string(buffer.substr(0, buffer.find_first_of(" ")));
-		
 			name = strtok(buffer, ' ');
 			if (database->look_up_name(name, (void*)entry) > 0) {
 				printf("510 - server -> client (Sent) - Registratie mislukt\n");
@@ -43,7 +42,6 @@ void Server::incomingMessage(Message  message) {
 			message.setMessage("");
 			message.setRecipients(name, ONE);
 			connection->send(message);
-			
 			printf("110 - server -> All but client (Sent) - user added\n");
 			message.setType(110);
 			message.setRecipients(name, ALLBUTONECLIENT);
@@ -124,15 +122,14 @@ void Server::incomingMessage(Message  message) {
 			break;
 		case 120:
 			printf("120 - client -> server (Received)\n");
-			if (! database->look_up_dir(ip, port, &entry)) {
+			if (! database->look_up_direct(ip, port, &entry)) {
 				break;	
 			}
 			message.setMessage(((client_d*)entry)->name + " " + buffer);
 			message.setType(130);
 			message.setRecipients("#all", ALL);
 			connection->send(message);
-			database->conClients--;
-			database->delete_(*entry.name);	
+			database->delete_entry(entry, DIRECT_CLIENT);	
 			printf("130 - server -> All (Sent)\n");
 		case 130:
 			printf("130 - server -> server (Received)\n");
@@ -149,19 +146,17 @@ void Server::incomingMessage(Message  message) {
 		case 140:
 			//printf("140 - ping -> 150 - pong\n"); Clutters the logs
 			message.setType(150);
-			message.setReferenceNumber(0);
-			if ( entry.ip == csip && entry.port == htons(2001))
-				message.setReferenceNumber(csref++);
-			connection->send(message, entry.ip, entry.port);
+			message.setReferenceNumber(csref++);
+			connection->send(message, csip, htons(2001));
 			break;
 		case 160:
 			printf("160 - client -> server (Received)\n");
-			if (!database->lookup(entry.ip, entry.port, &entry))
+			if (!database->look_up_direct(ip, port, &entry))
 				break;
-			if (database->lookup(buffer, NULL)) {
+			if (database->look_up_name(buffer, (void*)entry)) {
 				printf("530 - server -> client (Sent)\n");
 				message.setType(530);
-				message.setRecipients(*entry.name, ONE);
+				message.setRecipients(((client_d*)entry)->name, ONE);
 				message.setMessage("Name already taken");
 				connection->send(message);
 				break;
