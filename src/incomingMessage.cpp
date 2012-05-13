@@ -128,10 +128,13 @@ void Server::incomingMessage(Message  message) {
 			break;
 		case 120:
 			printf("120 - client -> server (Received)\n");
-			if (! database->look_up_direct(temp_ip, temp_port, (void*)entry)) {
+			if (! database->look_up_direct(temp_ip, temp_port, (client_d*)entry)) {
 				break;	
 			}
-			message.setMessage(((client_d*)entry)->name + " " + buffer);
+			str1 = ((client_d*)entry)->name;
+                        strcat(str1, " ");
+                        strcat(str1, buffer);
+			message.setMessage(str1);
 			message.setType(130);
 			message.setRecipients("#all", ALL);
 			connection->send(message);
