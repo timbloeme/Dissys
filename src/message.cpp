@@ -5,12 +5,14 @@ using namespace std;
  
 Message::Message(void){
 	mtype = NONE;
-	mdata = "";
+	strcpy(mdata, "");
+	//mdata = "";
 	msize = 0;
 	mrefnum = 0;
 	mip = 0;
 	mport = 0;
-	mrecipient = "";
+	strcpy(mrecipient, "");
+	//mrecipient = "";
 	mrecvtype = 0;
 }
 

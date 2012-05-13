@@ -71,9 +71,9 @@ Message Connection::listen(void){
 
 void Connection::send(Message message)
 {
-	int sendtype, size, temp;
+	int sendtype, temp;
 	char* recipient = message.getRecipients(&sendtype);
-	void *entry;
+	void *entry = NULL;
 	
 	//Als de naam van degene die dit bericht heeft gestuurd niet bij mij voorkomt vertrouw ik het niet
 	temp = database->look_up_name(recipient, (void*)entry);

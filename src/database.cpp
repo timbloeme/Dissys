@@ -167,7 +167,7 @@ int Database::delete_entry(void* entry, int type){
 }
 
 
-int Database::replace(void* entry, int type){
+/*int Database::replace(void* entry, int type){
   switch(type){
     case INDIRECT_CLIENT:{
       
@@ -184,7 +184,7 @@ int Database::replace(void* entry, int type){
     }break;
   }
   return 0;
-}
+}*/
 
 void* Database::return_list(int type){
   switch(type){
